@@ -2,6 +2,10 @@
    Sumber: Badan Pusat Statistik (BPS) dan Bank Dunia. Setiap angka memakai
    tahun rujukan sendiri; angka 2025 yang bertanda proyeksi berasal dari
    proyeksi penduduk BPS. Nilai provinsi dibulatkan dari publikasi BPS 2024.
+   38 provinsi: 4 provinsi pemekaran Papua (UU No. 14–16/2022) dan Papua
+   Barat Daya (UU No. 29/2022) memakai angka BPS 2024 pada batas wilayah
+   baru; kemiskinan 2020 (pov2020) tidak diterbitkan BPS untuk batas baru
+   itu, jadi bernilai null (ditampilkan "n/a" di Komparator).
    Semua angka tersimpan lokal — situs ini tidak memanggil jaringan. */
 window.STATNUSA = {
   meta: {
@@ -17,6 +21,12 @@ window.STATNUSA = {
     { name: "BPS — Keadaan Ketenagakerjaan Agustus 2024", year: 2024, url: "https://www.bps.go.id" },
     { name: "BPS — Indeks Pembangunan Manusia 2024", year: 2025, url: "https://www.bps.go.id" },
     { name: "BPS — Proyeksi Penduduk Indonesia 2020–2050", year: 2023, url: "https://www.bps.go.id" },
+    { name: "BPS — Statistik Indonesia 2025 (38 provinsi; proyeksi penduduk interim pertengahan 2024)", year: 2025, url: "https://www.bps.go.id" },
+    { name: "BPS — Indeks Pembangunan Manusia 2024 (BRS No. 85/11/Th. XXVII, 15 Nov 2024)", year: 2024, url: "https://www.bps.go.id" },
+    { name: "BPS — Data dan Informasi Kemiskinan Kabupaten/Kota 2024 (Susenas Maret 2024)", year: 2024, url: "https://www.bps.go.id" },
+    { name: "BPS — Perkembangan Indeks Harga Konsumen Desember 2024 (BRS No. 01/01/Th. XXVIII, 2 Jan 2025)", year: 2025, url: "https://www.bps.go.id" },
+    { name: "BPS — Keadaan Angkatan Kerja di Indonesia Agustus 2024 (TPT 38 provinsi)", year: 2024, url: "https://www.bps.go.id" },
+    { name: "BPS — [Seri 2010] PDRB Per Kapita (Ribu Rupiah), 2024", year: 2025, url: "https://www.bps.go.id" },
     { name: "Bank Dunia — World Development Indicators: Indonesia", year: 2025, url: "https://data.worldbank.org/country/indonesia" }
   ],
   years: [2020, 2021, 2022, 2023, 2024, 2025],
@@ -98,9 +108,15 @@ window.STATNUSA = {
     meanSchool: [8.72, 8.78, 8.89, 8.99, 9.08],
     expectedSchool: [12.98, 13.09, 13.10, 13.18, 13.34]
   },
-  /* 34 provinsi, struktur BPS 2024. pop = juta jiwa; pdrb = PDRB per kapita
-     juta rupiah; pov = kemiskinan % (Mar 2024); pov2020 = kemiskinan % (Mar 2020);
-     unemp = TPT % (Agu 2024); ipm = IPM 2024; infl = inflasi % (Des 2024). */
+  /* 38 provinsi, struktur BPS 2024 (pemekaran Papua 2022). pop = juta jiwa;
+     pdrb = PDRB per kapita juta rupiah; pov = kemiskinan % (Mar 2024);
+     pov2020 = kemiskinan % (Mar 2020) — null untuk 6 provinsi Papua karena
+     BPS tidak menerbitkan deret 2020 pada batas wilayah baru;
+     unemp = TPT % (Agu 2024); ipm = IPM 2024; infl = inflasi y-on-y % (Des 2024).
+     Enam baris Papua (2024, BPS): penduduk = proyeksi interim pertengahan
+     2024; PDRB per kapita = [Seri 2010] PDRB Per Kapita 2024; kemiskinan =
+     Susenas Mar 2024; TPT = Sakernas Agu 2024; IPM = BRS 15 Nov 2024;
+     inflasi = BRS IHK 2 Jan 2025. */
   provinces: [
     { name: "Aceh", pop: 5.55, pdrb: 62.1, pov: 14.23, pov2020: 15.43, unemp: 5.75, ipm: 74.12, infl: 1.9 },
     { name: "Sumatera Utara", pop: 15.80, pdrb: 65.4, pov: 8.25, pov2020: 8.75, unemp: 5.66, ipm: 75.48, infl: 1.7 },
@@ -134,7 +150,11 @@ window.STATNUSA = {
     { name: "Sulawesi Barat", pop: 1.59, pdrb: 44.7, pov: 10.64, pov2020: 11.25, unemp: 2.81, ipm: 70.10, infl: 2.0 },
     { name: "Maluku", pop: 2.00, pdrb: 42.6, pov: 16.17, pov2020: 17.84, unemp: 6.18, ipm: 71.76, infl: 2.6 },
     { name: "Maluku Utara", pop: 1.41, pdrb: 58.5, pov: 6.03, pov2020: 6.62, unemp: 3.99, ipm: 70.93, infl: 2.4 },
-    { name: "Papua Barat", pop: 1.28, pdrb: 80.5, pov: 20.24, pov2020: 20.76, unemp: 4.86, ipm: 67.02, infl: 2.8 },
-    { name: "Papua", pop: 4.46, pdrb: 55.4, pov: 25.61, pov2020: 26.64, unemp: 3.17, ipm: 60.97, infl: 2.7 }
+    { name: "Papua Barat", pop: 0.58, pdrb: 131.6, pov: 21.66, pov2020: null, unemp: 4.13, ipm: 67.69, infl: 2.5 },
+    { name: "Papua Barat Daya", pop: 0.63, pdrb: 59.1, pov: 18.13, pov2020: null, unemp: 6.48, ipm: 69.65, infl: 1.9 },
+    { name: "Papua", pop: 1.06, pdrb: 81.0, pov: 17.26, pov2020: null, unemp: 6.48, ipm: 73.83, infl: 1.8 },
+    { name: "Papua Selatan", pop: 0.54, pdrb: 61.6, pov: 17.44, pov2020: null, unemp: 4.05, ipm: 68.86, infl: 1.8 },
+    { name: "Papua Tengah", pop: 1.47, pdrb: 118.8, pov: 29.76, pov2020: null, unemp: 2.75, ipm: 60.25, infl: 3.3 },
+    { name: "Papua Pegunungan", pop: 1.47, pdrb: 18.1, pov: 32.97, pov2020: null, unemp: 1.32, ipm: 54.43, infl: 5.4 }
   ]
 };

@@ -1,0 +1,54 @@
+PASS rute Beranda termuat — StatNusa — Statistik Indonesia 2025: 281,6 Juta Penduduk, 38
+PASS tanpa overflow horizontal Beranda (desktop) — kelebihan 0px
+PASS rute Penduduk termuat — Penduduk & Demografi | StatNusa
+PASS tanpa overflow horizontal Penduduk (desktop) — kelebihan 0px
+PASS rute Ekonomi termuat — Ekonomi | StatNusa
+PASS tanpa overflow horizontal Ekonomi (desktop) — kelebihan 0px
+PASS rute Provinsi termuat — Provinsi & Komparator 38 Provinsi | StatNusa
+PASS tanpa overflow horizontal Provinsi (desktop) — kelebihan 0px
+PASS rute Sosial termuat — Sosial | StatNusa
+PASS tanpa overflow horizontal Sosial (desktop) — kelebihan 0px
+PASS rute Metodologi termuat — Metodologi & Sumber | StatNusa
+PASS tanpa overflow horizontal Metodologi (desktop) — kelebihan 0px
+PASS nol request eksternal
+PASS nol request gagal
+PASS nol console/page error
+PASS pemilih tren beranda berfungsi — svg 1→1
+PASS pencarian provinsi memfilter — 6 dari 38 provinsi ditampilkan. Jumlah 38 provinsi di data: 283,88 jt; total nasional BPS 2024: 281,6 jt (selisih akibat pembulatan & metode estimasi). Sumber: BPS 2024.
+PASS sort tabel provinsi berfungsi — Jawa Barat → Papua Pegunungan
+PASS sort TIDAK melempar halaman ke atas (bug v1) — scrollY 600 → 600
+PASS checkbox Komparator menambah pilihan — 3 provinsi dipilih → 4 provinsi dipilih
+PASS pemilih indikator Komparator berfungsi — tabel + grafik IPM tampil
+PASS tabel Komparator menandai nilai terbaik dengan bintang — 7 penanda bintang di tabel
+PASS reset Komparator berfungsi — 3 provinsi dipilih
+PASS peta merender 38 provinsi — 38 path
+PASS legenda peta tampil dengan rentang nilai — Semakin gelap = nilai semakin tinggi ·0,54–1,411,41–2,732,73–4,264,26–8,998,99–5
+PASS pemilih indikator peta mewarnai ulang — Papua #f7fbff → #993404
+PASS klik provinsi di peta masuk Komparator — 3 provinsi dipilih → 4 provinsi dipilih, checkbox=true, selected=1
+PASS klik provinsi pemekaran (Papua Tengah) masuk Komparator — 3 provinsi dipilih → 4 provinsi dipilih, checkbox=true, selected=1
+PASS Komparator menampilkan n/a untuk kemiskinan 2020 provinsi pemekaran — n/a + penjelasan di tabel tren
+PASS DQ completeness: 38 provinsi × 6 indikator numerik — 38 provinsi, lengkap=true
+PASS DQ completeness: hanya pov2020 6 provinsi Papua yang null (terdokumentasi) — Papua, Papua Barat, Papua Barat Daya, Papua Pegunungan, Papua Selatan, Papua Tengah
+PASS DQ uniqueness: 38 nama provinsi unik — duplikat? false
+PASS DQ validity: semua nilai dalam rentang wajar — pop 0,1–60; pdrb 10–400; pov 0–40; TPT 0–10; IPM 50–90; infl -1–7
+PASS DQ consistency: path peta == data provinsi — 38 path menutupi 38 nama data
+PASS DQ accuracy: hitung ulang Σ38 + top-10 + Jabar — Σ=283.88 top10=205.04 Jabar vs 23 terkecil=50.19
+PASS DQ accuracy: ekstrem baru = Papua Pegunungan (miskin/IPM/TPT) — povMax=Papua Pegunungan ipmMin=Papua Pegunungan unMin=Papua Pegunungan
+PASS DQ consistency: CSV provinsi == data.js (38 baris, semua kolom) — 38 baris, cocok=true
+PASS angka narasi provinsi benar (283,88; 2020–2024) — hilang: 
+PASS angka v1/v2-lama yang salah tidak muncul di provinsi — muncul: 
+PASS angka narasi penduduk benar (205,04; 72,8%) — 205,04/72,8% di halaman Penduduk
+PASS angka narasi beranda benar (24,13 jt miskin; 23 provinsi terkecil) — 24,13 + 23 terkecil + 56,1% di Beranda
+PASS angka v1 yang salah tidak muncul di beranda — bersih dari 25,22 & klaim Jabar salah
+PASS donat kota/desa dihapus (bukan pangsa) — donut=0
+PASS ekstrem Sosial: Papua Pegunungan termiskin + IPM terendah + TPT terendah — Papua Pegunungan di kartu ekstrem Sosial
+PASS tombol tema gelap berfungsi — tema=dark
+PASS CSV provinsi lokal tersedia (39 baris: header + 38 provinsi) — 39 baris
+PASS screenshot 1-beranda.jpg <= 256 KiB — 94114 byte
+PASS screenshot 2-provinsi-peta.jpg <= 256 KiB — 73661 byte
+PASS screenshot 3-penduduk.jpg <= 256 KiB — 64364 byte
+PASS tanpa overflow horizontal (phone 390) — kelebihan 0px
+PASS screenshot 4-beranda-phone.jpg <= 256 KiB — 49548 byte
+shots.json ditulis.
+
+51 lolos, 0 gagal dari 51 cek.

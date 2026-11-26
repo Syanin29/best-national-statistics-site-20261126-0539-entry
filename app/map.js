@@ -18,7 +18,11 @@ window.StatMap = (function () {
     return { key: key, label: key, decimals: 2, lowerBetter: false };
   }
 
-  /* [lon, lat] per provinsi — urutan sama dengan data.js (34 provinsi). */
+  /* [lon, lat] per provinsi — urutan sama dengan data.js (38 provinsi).
+     Papua dipecah 2022: Papua (pesisir utara) / Papua Tengah / Papua
+     Pegunungan / Papua Selatan; Papua Barat dipecah: Papua Barat (timur) /
+     Papua Barat Daya (kepala burung barat). Poligon berbagi titik batas
+     supaya ubinnya rapat tanpa celah besar. */
   var SHAPES = {
     "Aceh": [[95.2, 5.9], [96.8, 5.9], [98.0, 5.4], [98.1, 4.0], [97.2, 2.9], [95.9, 2.9], [95.2, 4.3]],
     "Sumatera Utara": [[98.1, 4.0], [99.6, 3.9], [100.4, 2.6], [100.6, 1.6], [99.6, 0.7], [98.5, 1.5], [98.0, 2.8]],
@@ -52,8 +56,12 @@ window.StatMap = (function () {
     "Sulawesi Barat": [[119.2, -0.6], [119.6, -2.2], [119.8, -3.6], [119.0, -3.4], [118.8, -1.6]],
     "Maluku": [[126.2, -2.6], [128.2, -2.8], [129.0, -4.2], [127.8, -5.6], [126.2, -4.8]],
     "Maluku Utara": [[126.8, 2.2], [128.4, 1.8], [128.6, 0.2], [127.4, -0.4], [126.6, 0.8]],
-    "Papua Barat": [[130.4, -0.4], [132.6, -0.8], [133.2, -2.0], [132.4, -3.8], [130.6, -3.4], [130.0, -1.6]],
-    "Papua": [[133.2, -2.0], [136.0, -1.2], [139.0, -1.6], [141.0, -2.2], [141.0, -8.0], [138.0, -8.4], [135.0, -7.6], [133.0, -5.0], [132.4, -3.8]]
+    "Papua Barat": [[131.8, -0.6], [132.6, -0.8], [133.2, -2.0], [132.4, -3.8], [131.6, -3.2], [132.0, -1.8]],
+    "Papua Barat Daya": [[130.4, -0.4], [131.8, -0.6], [132.0, -1.8], [131.6, -3.2], [130.6, -3.4], [130.0, -1.6]],
+    "Papua": [[134.0, -2.8], [136.0, -3.2], [138.5, -3.6], [141.0, -3.5], [141.0, -2.2], [139.0, -1.6], [136.0, -1.2], [133.2, -2.0]],
+    "Papua Selatan": [[133.0, -4.4], [135.5, -5.0], [138.5, -5.2], [141.0, -5.5], [141.0, -8.0], [138.0, -8.4], [135.0, -7.6], [133.0, -5.0]],
+    "Papua Tengah": [[134.0, -2.8], [136.0, -3.2], [138.5, -3.6], [138.5, -5.2], [135.5, -5.0], [133.0, -4.4]],
+    "Papua Pegunungan": [[138.5, -3.6], [141.0, -3.5], [141.0, -5.5], [138.5, -5.2]]
   };
 
   /* Skala sekuensial 5 tingkat, aman-buta-warna (ColorBrewer YlGnBu / YlOrBr). */
@@ -80,10 +88,13 @@ window.StatMap = (function () {
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
     var ramp = meta.lowerBetter ? RAMP_HIGHER_BAD : RAMP_HIGHER_OK;
     /* Skala kuintil (bukan interval sama-rata): data provinsi sangat miring
-       (mis. penduduk 0,74–50,35 jt) — interval linear membuat 30 provinsi
-       nyaris putih. Kuintil menjamin tiap tingkat warna terisi ±7 provinsi. */
+       (mis. penduduk 0,54–50,35 jt) — interval linear membuat 30+ provinsi
+       nyaris putih. Kuintil menjamin tiap tingkat warna terisi ±8 provinsi.
+       Batas dihitung dari n (38 provinsi → indeks 7/15/22/30), bukan angka
+       mati, supaya skala tetap benar bila jumlah provinsi berubah. */
     var sorted = vals.slice().sort(function (a, b) { return a - b; });
-    var cuts = [sorted[6], sorted[13], sorted[20], sorted[27]];
+    var qi = function (f) { return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * f) - 1)]; };
+    var cuts = [qi(0.2), qi(0.4), qi(0.6), qi(0.8)];
     function color(v) {
       var k = 0;
       while (k < 4 && v > cuts[k]) k++;

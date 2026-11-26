@@ -5,8 +5,8 @@
 // first load's files and bytes, and your source), with the vendored make.fun library. Leave vendor/makefun-frontend.ts
 // as it is: the scorer requires dossier.json to be byte for byte what its own copy writes.
 //
-// StatNusa v1 — Portal Statistik Indonesia: 281,6 juta penduduk, 34 provinsi,
-// 6 tahun tren 2020–2025, dan Komparator 34 Provinsi. Data nyata BPS & Bank Dunia,
+// StatNusa v2b — Portal Statistik Indonesia: 281,6 juta penduduk, 38 provinsi,
+// 6 tahun tren 2020–2025, dan Komparator 38 Provinsi + peta choropleth. Data nyata BPS & Bank Dunia,
 // tersimpan lokal di app/data.js + app/data/*.csv; grafik digambar sendiri (SVG)
 // di app/charts.js, tanpa library eksternal dan tanpa network request.
 //

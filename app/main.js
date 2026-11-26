@@ -15,10 +15,10 @@
   };
 
   var TITLES = {
-    "/": "StatNusa — Statistik Indonesia 2025: 281,6 Juta Penduduk, 34 Provinsi, 6 Tahun Tren",
+    "/": "StatNusa — Statistik Indonesia 2025: 281,6 Juta Penduduk, 38 Provinsi, Peta + Komparator, 6 Tahun Tren",
     "/penduduk": "Penduduk & Demografi | StatNusa",
     "/ekonomi": "Ekonomi | StatNusa",
-    "/provinsi": "Provinsi & Komparator 34 Provinsi | StatNusa",
+    "/provinsi": "Provinsi & Komparator 38 Provinsi | StatNusa",
     "/sosial": "Sosial | StatNusa",
     "/metodologi": "Metodologi & Sumber | StatNusa"
   };
@@ -87,7 +87,7 @@
             '<td class="num">' + p.ipm.toFixed(2) + '</td><td class="num">' + p.infl.toFixed(1) + "</td></tr>";
         }).join("");
         var totalProv = D.provinces.reduce(function (a, p) { return a + p.pop; }, 0);
-        count.textContent = list.length + " dari 34 provinsi ditampilkan. Jumlah 34 provinsi di data: " +
+        count.textContent = list.length + " dari 38 provinsi ditampilkan. Jumlah 38 provinsi di data: " +
           totalProv.toFixed(2).replace(".", ",") + " jt; total nasional BPS 2024: 281,6 jt (selisih akibat pembulatan & metode estimasi). Sumber: BPS 2024.";
       }
       function refreshMap() {

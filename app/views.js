@@ -81,7 +81,7 @@ window.StatViews = (function () {
     var surplus = D.trade[4].export - D.trade[4].import;
     return sectionHead("Portal Statistik Indonesia · Data BPS & Bank Dunia",
       "Indonesia dalam angka, 2020–2025",
-      "Satu portal untuk membaca Indonesia: <strong>" + fmt(NAT_POP_2024, 1) + " juta penduduk (BPS 2024)</strong> di <strong>34 provinsi</strong>, " +
+      "Satu portal untuk membaca Indonesia: <strong>" + fmt(NAT_POP_2024, 1) + " juta penduduk (BPS 2024)</strong> di <strong>38 provinsi</strong>, " +
       "ekonomi <strong>Rp22.139 triliun</strong>, dan <strong>6 tahun tren</strong> yang bisa dibandingkan — semua angka " +
       "disertai sumber dan tahunnya.") +
       kpiCards() +
@@ -92,11 +92,11 @@ window.StatViews = (function () {
       '<li><strong>' + fmt(jv.share, 1) + '% penduduk</strong> tinggal di Pulau Jawa — Jawa Barat sendiri ' + fmt(jb.jabar, 2) + ' juta jiwa (' + fmt(jb.share, 1) + '% nasional), lebih besar dari gabungan ' + jb.n + ' provinsi terkecil (' + fmt(jb.sum, 2) + ' jt). ' + srcTag("BPS 2024") + '</li>' +
       '<li><strong>Kemiskinan turun ' + fmt(povDrop, 2) + ' poin</strong> dalam empat tahun: dari ' + fmt(D.national.poverty[0], 2) + '% (Mar 2020) ke ' + fmt(D.national.poverty[4], 2) + '% (Mar 2024), lalu ' + fmt(D.national.poverty[5], 2) + '% (Mar 2025). ' + srcTag("BPS 2025") + '</li>' +
       '<li><strong>Surplus dagang 5 tahun beruntun:</strong> ekspor 2024 US$' + fmt(D.trade[4].export, 1) + ' miliar lawan impor US$' + fmt(D.trade[4].import, 1) + ' miliar (surplus US$' + fmt(surplus, 1) + ' miliar). ' + srcTag("BPS 2024") + '</li>' +
-      '</ol><p><a class="btn" href="#/provinsi">Bandingkan 34 provinsi →</a> <a class="btn ghost" href="#/ekonomi">Lihat ekonomi →</a></p></section>' +
+      '</ol><p><a class="btn" href="#/provinsi">Bandingkan 38 provinsi →</a> <a class="btn ghost" href="#/ekonomi">Lihat ekonomi →</a></p></section>' +
       '<section class="card"><h2>Jelajahi berdasarkan topik</h2><div class="topic-grid">' +
       '<a class="topic" href="#/penduduk"><strong>Penduduk &amp; Demografi</strong><span>Piramida penduduk 2024 + 10 provinsi terbesar</span></a>' +
       '<a class="topic" href="#/ekonomi"><strong>Ekonomi</strong><span>PDB per sektor, kuartal, ekspor-impor</span></a>' +
-      '<a class="topic" href="#/provinsi"><strong>Provinsi</strong><span>Tabel 34 provinsi + Komparator</span></a>' +
+      '<a class="topic" href="#/provinsi"><strong>Provinsi</strong><span>Tabel 38 provinsi + Komparator</span></a>' +
       '<a class="topic" href="#/sosial"><strong>Sosial</strong><span>Kemiskinan, pengangguran, IPM, pendidikan</span></a>' +
       '<a class="topic" href="#/metodologi"><strong>Metodologi &amp; Sumber</strong><span>Definisi, sumber, unduh CSV</span></a>' +
       '</div></section>';
@@ -184,8 +184,15 @@ window.StatViews = (function () {
       return '<tr><td>' + esc(ind2.label) + '</td>' + cells + '<td class="num">' + fmt(nat[ind2.key], ind2.decimals) + '</td></tr>';
     }).join("");
     var delta = selected.map(function (p) {
-      return '<tr><td>' + esc(p.name) + '</td><td class="num">' + fmt(p.pov2020, 2) + '</td><td class="num">' + fmt(p.pov, 2) + '</td><td class="num">' + fmt(p.pov - p.pov2020, 2) + '</td></tr>';
+      var v2020 = p.pov2020 == null ? "n/a" : fmt(p.pov2020, 2);
+      var chg = p.pov2020 == null ? "n/a" : fmt(p.pov - p.pov2020, 2);
+      return '<tr><td>' + esc(p.name) + '</td><td class="num">' + v2020 + '</td><td class="num">' + fmt(p.pov, 2) + '</td><td class="num">' + chg + '</td></tr>';
     }).join("");
+    var withHist = selected.filter(function (p) { return p.pov2020 != null; });
+    var deltaNote = withHist.length === selected.length
+      ? "Semua provinsi yang dipilih menurunkan kemiskinan sejak 2020 kecuali yang perubahannya positif. "
+      : "Provinsi hasil pemekaran 2022 (Papua, Papua Barat, Papua Selatan, Papua Tengah, Papua Pegunungan, Papua Barat Daya) tidak memiliki angka kemiskinan 2020 pada batas wilayah baru — ditampilkan n/a (belum diterbitkan BPS). " +
+        (withHist.length ? "Provinsi lain yang dipilih menurunkan kemiskinan sejak 2020 kecuali yang perubahannya positif. " : "");
     var chartItems = selected.map(function (p, i) { return { label: p.name, value: p[metric] }; });
     return '<table class="tbl"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' +
       '<p class="note">★ = nilai <strong>terbaik</strong> per indikator di antara provinsi yang dipilih — tertinggi untuk penduduk, PDRB per kapita, dan IPM; terendah untuk kemiskinan, pengangguran, dan inflasi. Kolom Nasional: PDB per kapita Rp78,6 jt; inflasi nasional 1,57%. ' + srcTag("BPS 2024") + '</p>' +
@@ -193,7 +200,7 @@ window.StatViews = (function () {
       C.hbarChart(chartItems, { decimals: ind.decimals, labelW: 170 }) +
       '<h3>Tren kemiskinan 2020 → 2024 (poin %)</h3>' +
       '<table class="tbl"><thead><tr><th>Provinsi</th><th class="num">2020</th><th class="num">2024</th><th class="num">Perubahan</th></tr></thead><tbody>' + delta + '</tbody></table>' +
-      '<p class="note">Semua provinsi yang dipilih menurunkan kemiskinan sejak 2020 kecuali yang perubahannya positif. ' + srcTag("BPS 2020 & 2024") + '</p>';
+      '<p class="note">' + deltaNote + srcTag("BPS 2020 & 2024") + '</p>';
   }
   function provinsi(state) {
     var q = (state.q || "").toLowerCase();
@@ -213,21 +220,21 @@ window.StatViews = (function () {
     var mapOpts = INDICATORS.map(function (ind) {
       return '<option value="' + ind.key + '"' + (ind.key === state.mapMetric ? ' selected' : '') + '>' + esc(ind.label) + '</option>';
     }).join("");
-    return sectionHead("Provinsi", "34 provinsi, satu peta, satu tabel, semua bisa diurutkan",
-      "Klik provinsi di peta untuk menambahkannya ke <strong>Komparator 34 Provinsi</strong> di bawah — " +
+    return sectionHead("Provinsi", "38 provinsi, satu peta, satu tabel, semua bisa diurutkan",
+      "Klik provinsi di peta untuk menambahkannya ke <strong>Komparator 38 Provinsi</strong> di bawah — " +
       "atau centang namanya. Peta diwarnai per indikator; klik judul kolom untuk mengurutkan tabel.") +
       '<section class="card" id="peta"><div class="card-head"><h2>Peta Indonesia 2024 — choropleth per indikator</h2>' +
       '<label class="map-ctl">Indikator peta <select id="map-metric">' + mapOpts + '</select></label></div>' +
       '<div id="map-wrap">' + window.StatMap.choropleth(state.mapMetric, state.selected) + '</div>' +
       '<p class="note">Klik provinsi di peta untuk menambah / menghapusnya dari Komparator (maks 4). Provinsi terpilih digaris tebal. ' + srcTag("BPS 2024") + '</p></section>' +
-      '<section class="card"><div class="card-head"><h2>Tabel 34 provinsi (2024)</h2>' +
+      '<section class="card"><div class="card-head"><h2>Tabel 38 provinsi (2024)</h2>' +
       '<label class="search">Cari provinsi <input id="prov-search" type="search" placeholder="mis. Jawa, Papua, Bali…" value="' + esc(state.q || "") + '" aria-label="Cari provinsi"></label></div>' +
       '<div class="tbl-wrap"><table class="tbl sortable"><thead><tr>' +
       th("name", "Provinsi") + th("pop", "Penduduk (jt)", "num") + th("pdrb", "PDRB/kapita (Rp jt)", "num") +
       th("pov", "Miskin (%)", "num") + th("unemp", "TPT (%)", "num") + th("ipm", "IPM", "num") + th("infl", "Inflasi (%)", "num") +
       '</tr></thead><tbody id="prov-body">' + provRows(list, state.sortKey, state.dir) + '</tbody></table></div>' +
-      '<p class="note" id="prov-count">' + list.length + ' dari 34 provinsi ditampilkan. Jumlah 34 provinsi di data: ' + fmt(provPopTotal(), 2) + ' jt; total nasional BPS 2024: ' + fmt(NAT_POP_2024, 1) + ' jt (selisih akibat pembulatan &amp; metode estimasi). ' + srcTag("BPS 2024") + '</p></section>' +
-      '<section class="card" id="komparator"><h2>Komparator 34 Provinsi</h2>' +
+      '<p class="note" id="prov-count">' + list.length + ' dari 38 provinsi ditampilkan. Jumlah 38 provinsi di data: ' + fmt(provPopTotal(), 2) + ' jt; total nasional BPS 2024: ' + fmt(NAT_POP_2024, 1) + ' jt (selisih akibat pembulatan &amp; metode estimasi). ' + srcTag("BPS 2024") + '</p></section>' +
+      '<section class="card" id="komparator"><h2>Komparator 38 Provinsi</h2>' +
       '<p>Sistem unik StatNusa: pilih 2–4 provinsi, bandingkan <strong>6 indikator sekaligus</strong> — penduduk, PDRB per kapita, kemiskinan, pengangguran, IPM, inflasi — plus tren kemiskinan 2020–2024.</p>' +
       '<div class="check-grid">' + checks + '</div>' +
       '<p class="comp-controls"><label>Indikator grafik <select id="comp-metric">' + opts + '</select></label> ' +
@@ -298,15 +305,16 @@ window.StatViews = (function () {
       '<dt>Kemiskinan</dt><dd>Penduduk dengan pengeluaran per kapita di bawah garis kemiskinan, diukur tiap Maret &amp; September.</dd>' +
       '<dt>IPM</dt><dd>Indeks Pembangunan Manusia (0–100): kesehatan, pendidikan, dan standar hidup layak.</dd>' +
       '<dt>PDRB per kapita</dt><dd>PDRB harga berlaku provinsi dibagi jumlah penduduknya, juta rupiah.</dd>' +
-      '<dt>Struktur provinsi</dt><dd>Tabel memakai 34 provinsi seperti publikasi BPS 2024; pemekaran Papua terbaru belum dipisah agar deret 2020–2024 sebanding.</dd>' +
+      '<dt>Struktur provinsi</dt><dd>Tabel memakai 38 provinsi hasil pemekaran Papua 2022 (UU No. 14–16/2022 tentang Papua Selatan, Papua Tengah, Papua Pegunungan; UU No. 29/2022 tentang Papua Barat Daya). Keenam provinsi Papua memakai angka BPS 2024 pada batas wilayah baru; kemiskinan 2020 tidak diterbitkan BPS untuk batas baru itu (n/a di Komparator).</dd>' +
       '</dl></section>' +
       '<section class="card"><h2>Unduh data (CSV)</h2><p>Semua angka di situs ini tersedia sebagai berkas lokal — tanpa akun, tanpa jaringan.</p><ul class="downloads">' +
       '<li><a href="data/nasional.csv" download>nasional.csv</a> — tren nasional 2020–2025 (penduduk, PDB, pertumbuhan, inflasi, TPT, kemiskinan, IPM)</li>' +
-      '<li><a href="data/provinsi.csv" download>provinsi.csv</a> — 34 provinsi × 6 indikator, 2024 + kemiskinan 2020</li>' +
+      '<li><a href="data/provinsi.csv" download>provinsi.csv</a> — 38 provinsi × 6 indikator, 2024 + kemiskinan 2020 (n/a untuk 6 provinsi Papua hasil pemekaran)</li>' +
       '<li><a href="data/ekonomi.csv" download>ekonomi.csv</a> — PDB per sektor 2024, pertumbuhan kuartalan, ekspor-impor 2020–2024</li>' +
       '</ul><p class="note">Berkas dibaca langsung dari folder situs; pengunduhan bekerja offline. ' + srcTag("BPS 2024–2025") + '</p></section>' +
       '<section class="card"><h2>Catatan &amp; batasan</h2><ul class="notes">' +
-      '<li>Angka provinsi dibulatkan ke 1–2 desimal dari publikasi BPS. Jumlah penduduk 34 provinsi di data ini: ' + fmt(provPopTotal(), 2) + ' jt, sedangkan total nasional BPS 2024: ' + fmt(NAT_POP_2024, 1) + ' jt — selisih ' + fmt(provPopTotal() - NAT_POP_2024, 2) + ' jt akibat pembulatan per provinsi dan perbedaan metode estimasi. Situs ini memakai ' + fmt(NAT_POP_2024, 1) + ' jt sebagai total nasional, dan ' + fmt(provPopTotal(), 2) + ' jt bila menjumlahkan tabel provinsi; keduanya diberi label yang berbeda supaya tidak tertukar.</li>' +
+      '<li>Angka provinsi dibulatkan ke 1–2 desimal dari publikasi BPS. Jumlah penduduk 38 provinsi di data ini: ' + fmt(provPopTotal(), 2) + ' jt, sedangkan total nasional BPS 2024: ' + fmt(NAT_POP_2024, 1) + ' jt — selisih ' + fmt(provPopTotal() - NAT_POP_2024, 2) + ' jt akibat pembulatan per provinsi dan perbedaan metode estimasi. Situs ini memakai ' + fmt(NAT_POP_2024, 1) + ' jt sebagai total nasional, dan ' + fmt(provPopTotal(), 2) + ' jt bila menjumlahkan tabel provinsi; keduanya diberi label yang berbeda supaya tidak tertukar.</li>' +
+      '<li>Enam provinsi Papua memakai angka BPS 2024 pada batas wilayah baru (penduduk proyeksi interim; PDRB per kapita 2024; kemiskinan Susenas Maret 2024; TPT Sakernas Agustus 2024; IPM BRS 15 November 2024; inflasi y-on-y BRS IHK 2 Januari 2025). Angka PDRB per kapita, IPM, dan inflasi 32 provinsi lainnya masih memakai vintage v1 (2023) dan belum dipanen ulang ke rilis BPS 2024 — lihat daftar sumber di atas untuk tahun tiap publikasi; pemanenan ulang 32 provinsi adalah pekerjaan lanjutan, bukan bagian v2b.</li>' +
       '<li>Angka 2025 untuk penduduk adalah proyeksi; seri PDB, inflasi, TPT, dan IPM berakhir 2024 karena publikasi 2025 belum lengkap saat situs disusun.</li>' +
       '<li>StatNusa adalah portal independen dan bukan situs resmi BPS; nama dan desainnya original.</li>' +
       '</ul></section>';
