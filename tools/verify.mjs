@@ -166,6 +166,19 @@ try {
   await page.click('path[data-prov="Papua Tengah"]', { force: true });
   await page.waitForTimeout(200);
 
+  /* Reviser v2b: batas Komparator maks 4 — pilihan ke-5 ditolak, pesan tampil,
+     checkbox-nya tetap tak dicentang; lalu kembalikan ke 3 bawaan. */
+  await page.click('path[data-prov="Bali"]', { force: true });
+  await page.waitForTimeout(200);
+  const fourTxt = await page.textContent("#comp-status");
+  await page.click('[data-comp-prov][value="Aceh"]');
+  await page.waitForTimeout(200);
+  const guardTxt = await page.textContent("#comp-status");
+  const acehChecked = await page.isChecked('[data-comp-prov][value="Aceh"]');
+  check("Komparator menolak provinsi ke-5 (maks 4) + pesan tampil", (fourTxt || "").includes("4 provinsi dipilih") && (guardTxt || "").includes("Maksimal 4 provinsi") && !acehChecked, (fourTxt || "") + " → " + (guardTxt || "") + ", Aceh dicentang=" + acehChecked);
+  await page.click('path[data-prov="Bali"]', { force: true });
+  await page.waitForTimeout(200);
+
   /* Kualitas data — data-quality-auditor, 6 dimensi (v2b). */
   const dq = await page.evaluate(() => {
     const D = window.STATNUSA;
