@@ -1,0 +1,31 @@
+lapangan_usaha_2024,pangsa_pdb_persen
+Industri pengolahan,18.67
+Perdagangan besar & eceran,12.85
+Pertanian kehutanan & perikanan,11.91
+Konstruksi,10.30
+Pertambangan & penggalian,9.07
+Transportasi & pergudangan,5.50
+Jasa keuangan & asuransi,4.30
+Informasi & komunikasi,4.20
+Real estat,2.70
+Lapangan usaha lainnya,20.50
+
+kuartal,pertumbuhan_yoy_persen
+2023-Q1,5.04
+2023-Q2,5.17
+2023-Q3,4.94
+2023-Q4,5.04
+2024-Q1,5.11
+2024-Q2,5.05
+2024-Q3,4.95
+2024-Q4,5.02
+2025-Q1,4.87
+2025-Q2,5.12
+2025-Q3,5.04
+
+tahun,ekspor_miliar_usd,impor_miliar_usd,neraca_miliar_usd
+2020,163.2,141.6,21.6
+2021,231.6,196.2,35.4
+2022,291.9,237.5,54.4
+2023,258.8,221.9,36.9
+2024,264.7,233.7,31.0
