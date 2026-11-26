@@ -107,6 +107,8 @@ try {
   await page.waitForTimeout(200);
   const compHtml = await page.textContent("#comp-result");
   check("pemilih indikator Komparator berfungsi", (compHtml || "").includes("IPM"), "tabel + grafik IPM tampil");
+  const bintangTerbaik = (compHtml || "").split("★").length - 1;
+  check("tabel Komparator menandai nilai terbaik dengan bintang", bintangTerbaik >= 6, bintangTerbaik + " penanda bintang di tabel");
   await page.click("#comp-reset");
   await page.waitForTimeout(200);
   const resetTxt = await page.textContent("#comp-status");
