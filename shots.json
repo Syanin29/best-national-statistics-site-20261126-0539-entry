@@ -8,7 +8,7 @@
     }
   },
   {
-    "file": "2-komparator.jpg",
+    "file": "2-provinsi-peta.jpg",
     "path": "#/provinsi",
     "viewport": {
       "width": 1280,
@@ -16,8 +16,8 @@
     }
   },
   {
-    "file": "3-ekonomi.jpg",
-    "path": "#/ekonomi",
+    "file": "3-penduduk.jpg",
+    "path": "#/penduduk",
     "viewport": {
       "width": 1280,
       "height": 800

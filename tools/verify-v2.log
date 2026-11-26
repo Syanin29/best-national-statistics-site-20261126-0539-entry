@@ -1,0 +1,43 @@
+PASS rute Beranda termuat — StatNusa — Statistik Indonesia 2025: 281,6 Juta Penduduk, 34
+PASS tanpa overflow horizontal Beranda (desktop) — kelebihan 0px
+PASS rute Penduduk termuat — Penduduk & Demografi | StatNusa
+PASS tanpa overflow horizontal Penduduk (desktop) — kelebihan 0px
+PASS rute Ekonomi termuat — Ekonomi | StatNusa
+PASS tanpa overflow horizontal Ekonomi (desktop) — kelebihan 0px
+PASS rute Provinsi termuat — Provinsi & Komparator 34 Provinsi | StatNusa
+PASS tanpa overflow horizontal Provinsi (desktop) — kelebihan 0px
+PASS rute Sosial termuat — Sosial | StatNusa
+PASS tanpa overflow horizontal Sosial (desktop) — kelebihan 0px
+PASS rute Metodologi termuat — Metodologi & Sumber | StatNusa
+PASS tanpa overflow horizontal Metodologi (desktop) — kelebihan 0px
+PASS nol request eksternal
+PASS nol request gagal
+PASS nol console/page error
+PASS pemilih tren beranda berfungsi — svg 1→1
+PASS pencarian provinsi memfilter — 2 dari 34 provinsi ditampilkan. Jumlah 34 provinsi di data: 283,87 jt; total nasional BPS 2024: 281,6 jt (selisih akibat pembulatan & metode estimasi). Sumber: BPS 2024.
+PASS sort tabel provinsi berfungsi — Jawa Barat → Papua
+PASS sort TIDAK melempar halaman ke atas (bug v1) — scrollY 600 → 600
+PASS checkbox Komparator menambah pilihan — 3 provinsi dipilih → 4 provinsi dipilih
+PASS pemilih indikator Komparator berfungsi — tabel + grafik IPM tampil
+PASS tabel Komparator menandai nilai terbaik dengan bintang — 7 penanda bintang di tabel
+PASS reset Komparator berfungsi — 3 provinsi dipilih
+PASS peta merender 34 provinsi — 34 path
+PASS legenda peta tampil dengan rentang nilai — Semakin gelap = nilai semakin tinggi ·0,74–2,002,00–3,683,68–5,665,66–9,609,60–5
+PASS pemilih indikator peta mewarnai ulang — Papua #6baed6 → #993404
+PASS klik provinsi di peta masuk Komparator — 3 provinsi dipilih → 4 provinsi dipilih, checkbox=true, selected=1
+PASS angka narasi provinsi benar (283,87; 2020–2024) — hilang: 
+PASS angka v1 yang salah tidak muncul di provinsi — muncul: 
+PASS angka narasi penduduk benar (205,04; 72,8%) — 205,04/72,8% di halaman Penduduk
+PASS angka narasi beranda benar (24,13 jt miskin; 19 provinsi terkecil) — 24,13 + 19 terkecil + 56,1% di Beranda
+PASS angka v1 yang salah tidak muncul di beranda — bersih dari 25,22 & klaim Jabar salah
+PASS donat kota/desa dihapus (bukan pangsa) — donut=0
+PASS tombol tema gelap berfungsi — tema=dark
+PASS CSV provinsi lokal tersedia — 35 baris
+PASS screenshot 1-beranda.jpg <= 256 KiB — 94138 byte
+PASS screenshot 2-provinsi-peta.jpg <= 256 KiB — 73022 byte
+PASS screenshot 3-penduduk.jpg <= 256 KiB — 64364 byte
+PASS tanpa overflow horizontal (phone 390) — kelebihan 0px
+PASS screenshot 4-beranda-phone.jpg <= 256 KiB — 49524 byte
+shots.json ditulis.
+
+40 lolos, 0 gagal dari 40 cek.

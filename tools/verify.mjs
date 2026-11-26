@@ -1,12 +1,16 @@
-/* StatNusa — verifikasi otomatis (Node 22, Playwright Firefox).
+/* StatNusa — verifikasi otomatis v2 (Node 22, Playwright Firefox).
    Menyalakan serve.ts di port acak, lalu memeriksa:
    1. semua 6 rute termuat tanpa console error & tanpa request gagal,
    2. NOL network request ke luar localhost (semua berkas lokal),
    3. semua link nav berfungsi (hash berubah + judul berubah),
-   4. kontrol berfungsi: pemilih tren beranda, sort tabel, cari provinsi,
-      checkbox Komparator (maks 4), pemilih indikator, reset, tema gelap,
-   5. tidak ada horizontal overflow di desktop 1280×800 & phone 390×844,
-   6. 4 screenshot ke screenshots/ (JPEG, masing-masing <= 256 KiB).
+   4. kontrol berfungsi: pemilih tren beranda, sort tabel (tanpa scroll ke atas),
+      cari provinsi, checkbox Komparator (maks 4), pemilih indikator, reset,
+      tema gelap, PETA choropleth (34 provinsi, ganti indikator, klik → Komparator),
+   5. angka narasi = hasil hitung data.js (283,87 / 205,04 / 72,8% / 24,13 /
+      "19 provinsi terkecil"; angka v1 yang salah TIDAK muncul),
+   6. tidak ada horizontal overflow di desktop 1280×800 & phone 390×844,
+   7. 4 screenshot ke screenshots/ (JPEG, masing-masing <= 256 KiB):
+      1-beranda, 2-provinsi-peta, 3-penduduk, 4-beranda-phone.
    Keluar 0 bila semua cek lolos, 1 bila ada yang gagal.
    Jalankan: node tools/verify.mjs */
 import { spawn } from "node:child_process";
@@ -94,10 +98,16 @@ try {
   await page.fill("#prov-search", "");
   await page.waitForTimeout(200);
   const firstBefore = await page.textContent("#prov-body tr:first-child td:first-child");
+  /* v2: sort TIDAK boleh melempar halaman ke atas — scroll dulu ke bawah, lalu sort. */
+  await page.evaluate(() => window.scrollTo(0, 600));
+  const scrollBefore = await page.evaluate(() => window.scrollY);
   await page.click('th[data-sort="pov"]');
   await page.waitForTimeout(200);
   const firstAfter = await page.textContent("#prov-body tr:first-child td:first-child");
+  const scrollAfter = await page.evaluate(() => window.scrollY);
   check("sort tabel provinsi berfungsi", firstBefore !== firstAfter, firstBefore + " → " + firstAfter);
+  check("sort TIDAK melempar halaman ke atas (bug v1)", Math.abs(scrollAfter - scrollBefore) < 5, "scrollY " + scrollBefore + " → " + scrollAfter);
+  await page.evaluate(() => window.scrollTo(0, 0));
   const compBefore = await page.textContent("#comp-status");
   await page.click('[data-comp-prov][value="Bali"]');
   await page.waitForTimeout(200);
@@ -114,6 +124,56 @@ try {
   const resetTxt = await page.textContent("#comp-status");
   check("reset Komparator berfungsi", (resetTxt || "").includes("3 provinsi dipilih"), resetTxt);
 
+  /* Peta choropleth (v2): 34 provinsi, legenda, ganti indikator, klik → Komparator. */
+  const provPaths = await page.locator("#indonesia-map path[data-prov]").count();
+  check("peta merender 34 provinsi", provPaths === 34, provPaths + " path");
+  const legendTxt = await page.textContent(".map-legend");
+  check("legenda peta tampil dengan rentang nilai", /Penduduk \(jt jiwa\)/.test(legendTxt || "") && (legendTxt || "").includes("–"), (legendTxt || "").slice(0, 80));
+  const fillBefore = await page.getAttribute('path[data-prov="Papua"]', "fill");
+  await page.selectOption("#map-metric", "pov");
+  await page.waitForTimeout(200);
+  const fillAfter = await page.getAttribute('path[data-prov="Papua"]', "fill");
+  const legendAfter = await page.textContent(".map-legend");
+  check("pemilih indikator peta mewarnai ulang", fillBefore !== fillAfter && /Kemiskinan/.test(legendAfter || ""), "Papua " + fillBefore + " → " + fillAfter);
+  await page.selectOption("#map-metric", "pop");
+  await page.waitForTimeout(200);
+  const compBeforeMap = await page.textContent("#comp-status");
+  await page.click('path[data-prov="Bali"]', { force: true });
+  await page.waitForTimeout(200);
+  const compAfterMap = await page.textContent("#comp-status");
+  const baliChecked = await page.isChecked('[data-comp-prov][value="Bali"]');
+  const baliSel = await page.locator('path[data-prov="Bali"].selected').count();
+  check("klik provinsi di peta masuk Komparator", (compAfterMap || "").includes("4 provinsi dipilih") && baliChecked && baliSel === 1, (compBeforeMap || "") + " → " + (compAfterMap || "") + ", checkbox=" + baliChecked + ", selected=" + baliSel);
+  await page.click('path[data-prov="Bali"]', { force: true });
+  await page.waitForTimeout(200);
+
+  /* Angka narasi = hitung data.js (v2); angka v1 yang salah tidak boleh muncul. */
+  const provTxt = await page.evaluate(() => document.body.innerText);
+  /* "2020–2025" di footer (rentang data nasional) sah — yang dilarang adalah
+     frasa tren komparator "tren kemiskinan 2020–2025" (tabelnya 2020→2024). */
+  const mustHave = ["283,87", "2020–2024"];
+  const mustNot = ["219,9", "25,22", "30 provinsi lain digabung", "279,1", "tren kemiskinan 2020–2025"];
+  const missingNums = mustHave.filter((s) => !provTxt.includes(s));
+  const wrongNums = mustNot.filter((s) => provTxt.includes(s));
+  check("angka narasi provinsi benar (283,87; 2020–2024)", missingNums.length === 0, "hilang: " + missingNums.join(", "));
+  check("angka v1 yang salah tidak muncul di provinsi", wrongNums.length === 0, "muncul: " + wrongNums.join(", "));
+  await page.goto("http://127.0.0.1:8901/index.html#/penduduk");
+  await ready();
+  const pendTxt = await page.evaluate(() => document.body.innerText);
+  check("angka narasi penduduk benar (205,04; 72,8%)", pendTxt.includes("205,04") && pendTxt.includes("72,8%"), "205,04/72,8% di halaman Penduduk");
+  await page.goto("http://127.0.0.1:8901/index.html#/");
+  await ready();
+  const homeTxt2 = await page.evaluate(() => document.body.innerText);
+  check("angka narasi beranda benar (24,13 jt miskin; 19 provinsi terkecil)", homeTxt2.includes("24,13") && homeTxt2.includes("19 provinsi terkecil") && homeTxt2.includes("56,1%"), "24,13 + 19 terkecil + 56,1% di Beranda");
+  check("angka v1 yang salah tidak muncul di beranda", !homeTxt2.includes("25,22") && !homeTxt2.includes("30 provinsi lain digabung"), "bersih dari 25,22 & klaim Jabar salah");
+  await page.goto("http://127.0.0.1:8901/index.html#/sosial");
+  await ready();
+  const donutCount = await page.locator(".donut").count();
+  const sosialTxt = await page.evaluate(() => document.body.innerText);
+  check("donat kota/desa dihapus (bukan pangsa)", donutCount === 0 && sosialTxt.includes("bukan pangsa penduduk"), "donut=" + donutCount);
+  await page.goto("http://127.0.0.1:8901/index.html#/provinsi");
+  await ready();
+
   /* Tema gelap. */
   await page.click("#theme-toggle");
   const theme = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
@@ -128,12 +188,13 @@ try {
   });
   check("CSV provinsi lokal tersedia", csv.ok && csv.lines === 35, csv.lines + " baris");
 
-  /* Screenshot 1–3 desktop, 4 phone. */
+  /* Screenshot 1–3 desktop, 4 phone. Shot 2 diambil dari atas (header/nav utuh,
+     peta terlihat penuh) — TANPA scroll ke komparator seperti v1. */
   mkdirSync(shotsDir, { recursive: true });
   const shots = [
     ["1-beranda.jpg", "#/", 1280, 800],
-    ["2-komparator.jpg", "#/provinsi", 1280, 800],
-    ["3-ekonomi.jpg", "#/ekonomi", 1280, 800]
+    ["2-provinsi-peta.jpg", "#/provinsi", 1280, 800],
+    ["3-penduduk.jpg", "#/penduduk", 1280, 800]
   ];
   for (const [file, hash, w, h] of shots) {
     await page.setViewportSize({ width: w, height: h });
@@ -141,10 +202,6 @@ try {
     await page.reload(); /* reset state aplikasi (mis. pemilih tren) ke default */
     await ready();
     await page.waitForTimeout(300);
-    if (file === "2-komparator.jpg") {
-      await page.evaluate(() => document.getElementById("komparator").scrollIntoView());
-      await page.waitForTimeout(300);
-    }
     await page.screenshot({ path: join(shotsDir, file), type: "jpeg", quality: 72 });
     const bytes = statSync(join(shotsDir, file)).size;
     check("screenshot " + file + " <= 256 KiB", bytes <= 262144, bytes + " byte");
@@ -164,8 +221,8 @@ try {
   /* shots.json diperbarui sesuai view. */
   writeFileSync(join(root, "shots.json"), JSON.stringify([
     { file: "1-beranda.jpg", path: "#/", viewport: { width: 1280, height: 800 } },
-    { file: "2-komparator.jpg", path: "#/provinsi", viewport: { width: 1280, height: 800 } },
-    { file: "3-ekonomi.jpg", path: "#/ekonomi", viewport: { width: 1280, height: 800 } },
+    { file: "2-provinsi-peta.jpg", path: "#/provinsi", viewport: { width: 1280, height: 800 } },
+    { file: "3-penduduk.jpg", path: "#/penduduk", viewport: { width: 1280, height: 800 } },
     { file: "4-beranda-phone.jpg", path: "#/", viewport: { width: 390, height: 844 } }
   ], null, 2) + "\n");
   console.log("shots.json ditulis.");

@@ -13,9 +13,9 @@ window.StatCharts = (function () {
     return { w: w, h: h, L: 52, R: 14, T: 14, B: 34 };
   }
 
-  function yTicks(max, steps) {
+  function yTicks(lo, hi, steps) {
     var out = [], i;
-    for (i = 0; i <= steps; i++) out.push(max * i / steps);
+    for (i = 0; i <= steps; i++) out.push(lo + (hi - lo) * i / steps);
     return out;
   }
 
@@ -34,7 +34,7 @@ window.StatCharts = (function () {
     var X = function (i) { return f.L + (labels.length === 1 ? iw / 2 : iw * i / (labels.length - 1)); };
     var Y = function (v) { return f.T + ih - (v - lo) / (hi - lo) * ih; };
     var s = '<svg viewBox="0 0 ' + f.w + ' ' + f.h + '" role="img" aria-label="Grafik garis" class="chart-svg">';
-    yTicks(hi, 4).forEach(function (t) {
+    yTicks(lo, hi, 4).forEach(function (t) {
       var y = Y(t);
       s += '<line x1="' + f.L + '" y1="' + y.toFixed(1) + '" x2="' + (f.w - f.R) + '" y2="' + y.toFixed(1) + '" stroke="' + GRID + '"/>';
       s += '<text x="' + (f.L - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end" class="tick">' + fmt(t, opts.decimals || 0) + '</text>';
@@ -73,7 +73,7 @@ window.StatCharts = (function () {
     var slot = iw / items.length, bw = Math.min(46, slot * 0.62);
     var Y = function (v) { return f.T + ih - (v - min) / (max - min) * ih; };
     var s = '<svg viewBox="0 0 ' + f.w + ' ' + f.h + '" role="img" aria-label="Grafik batang" class="chart-svg">';
-    yTicks(max, 4).forEach(function (t) {
+    yTicks(min, max, 4).forEach(function (t) {
       var y = Y(t);
       s += '<line x1="' + f.L + '" y1="' + y.toFixed(1) + '" x2="' + (f.w - f.R) + '" y2="' + y.toFixed(1) + '" stroke="' + GRID + '"/>';
       s += '<text x="' + (f.L - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end" class="tick">' + fmt(t, opts.decimals || 0) + '</text>';
@@ -118,7 +118,7 @@ window.StatCharts = (function () {
     var slot = iw / labels.length, gw = Math.min(110, slot * 0.7), bw = gw / series.length;
     var Y = function (v) { return f.T + ih - v / max * ih; };
     var s = '<svg viewBox="0 0 ' + f.w + ' ' + f.h + '" role="img" aria-label="Grafik batang berkelompok" class="chart-svg">';
-    yTicks(max, 4).forEach(function (t) {
+    yTicks(0, max, 4).forEach(function (t) {
       var y = Y(t);
       s += '<line x1="' + f.L + '" y1="' + y.toFixed(1) + '" x2="' + (f.w - f.R) + '" y2="' + y.toFixed(1) + '" stroke="' + GRID + '"/>';
       s += '<text x="' + (f.L - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end" class="tick">' + fmt(t, 0) + '</text>';

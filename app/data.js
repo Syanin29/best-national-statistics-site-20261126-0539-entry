@@ -51,7 +51,7 @@ window.STATNUSA = {
     { id: "growth", label: "Pertumbuhan Ekonomi", value: "5,03%", sub: "2024 · y-on-y", source: "BPS 2024" },
     { id: "infl", label: "Inflasi", value: "1,57%", sub: "2024 · y-on-y Desember", source: "BPS 2024" },
     { id: "unemp", label: "Pengangguran (TPT)", value: "4,76%", sub: "Agu 2024 · terendah sejak 2019", source: "BPS 2024" },
-    { id: "pov", label: "Kemiskinan", value: "8,57%", sub: "Mar 2024 · 25,22 jt jiwa", source: "BPS 2024" }
+    { id: "pov", label: "Kemiskinan", value: "8,57%", sub: "Mar 2024 · 24,13 jt jiwa", source: "BPS 2024" }
   ],
   /* PDB menurut lapangan usaha, 2024, persen terhadap PDB */
   sectors: [
